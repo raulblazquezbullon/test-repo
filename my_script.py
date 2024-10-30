@@ -101,7 +101,7 @@ def handler(event, context):
         'status': 'success',
         'message': f"Event type: {event_type}, S3 path: {s3_path}"
     }
-
+    print("Message created, all OK")
     return {
         'statusCode': 200,
         'body': json.dumps(message)
