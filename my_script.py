@@ -137,18 +137,7 @@ def handler(event, context):
 
     # Cast data types to DynamoDB format
     for key, value in extracted_data.items():
-        if isinstance(value, str):
-            print(f"String value: {value}")
-            item[key] = {"S": str(value)}  # String
-        elif isinstance(value, bool):
-            print(f"Boolean value: {value}")
-            item[key] = {"BOOL": value}  # Boolean
-        elif isinstance(value, (int, float)):
-            print(f"Number value: {value}")
-            item[key] = {"N": str(value)}  # Number
-        elif value is None:
-            print(f"Null value: {value}")
-            item[key] = {"NULL": True}  # Null value
+        item[key] = cast_to_dynamodb(value)
 
     # Send the extracted data to control_queue SQS
     try:
@@ -204,3 +193,25 @@ def handler(event, context):
         'statusCode': 200,
         'body': json.dumps(message)
     }
+
+def cast_to_dynamodb(value):
+    """Recursively cast Python objects to DynamoDB-compatible types."""
+    if isinstance(value, str):
+        return {"S": value}  # String
+    
+    elif isinstance(value, bool):
+        return {"BOOL": value}  # Boolean
+    
+    elif isinstance(value, (int, float)):
+        return {"N": str(value)}  # Number (must be a string in DynamoDB)
+    
+    elif isinstance(value, list):
+        # Process each element in the list
+        return {"L": [cast_to_dynamodb(v) for v in value]}
+    
+    elif isinstance(value, dict):
+        # Convert dictionary to DynamoDB Map
+        return {"M": {k: cast_to_dynamodb(v) for k, v in value.items()}}
+    
+    elif value is None:
+        return {"NULL": True}  # Null
