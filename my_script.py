@@ -124,12 +124,12 @@ def handler(event, context):
 
     # Cast data types to DynamoDB format
     for key, value in extracted_data.items():
-        if isinstance(value, str) or isinstance(value, bool):
-            item[key] = {"S": value}  # String
+        if isinstance(value, str):
+            item[key] = {"S": str(value)}  # String
         elif isinstance(value, (int, float)):
             item[key] = {"N": str(value)}  # Number
-        # elif isinstance(value, bool):
-        #     item[key] = {"BOOL": value}  # Boolean
+        elif isinstance(value, bool):
+            item[key] = {"BOOL": str(value)}  # Boolean
         elif value is None:
             item[key] = {"NULL": True}  # Null value
 
