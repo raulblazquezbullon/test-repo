@@ -60,6 +60,19 @@ def handler(event, context):
     s3_path = f"s3://{bucket_name}/{object_key}"
     print(f"S3 path built: {s3_path}")
 
+    if object_key.endswith("/"):
+        print(f"[INFO] The object key is a folder, skipping the processing")
+
+        message = {
+            'status': 'success',
+            'message': 'The object key is a folder, skipping the processing'
+        }
+
+        return {
+            'statusCode': 201,
+            'body': json.dumps(message)
+        }
+
     # Download the file from S3
     try:
         print(f"Downloading file from S3: {s3_path}")
@@ -129,7 +142,7 @@ def handler(event, context):
             item[key] = {"S": str(value)}  # String
         elif isinstance(value, bool):
             print(f"Boolean value: {value}")
-            item[key] = {"BOOL": str(value)}  # Boolean
+            item[key] = {"BOOL": value}  # Boolean
         elif isinstance(value, (int, float)):
             print(f"Number value: {value}")
             item[key] = {"N": str(value)}  # Number
