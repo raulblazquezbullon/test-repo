@@ -125,12 +125,16 @@ def handler(event, context):
     # Cast data types to DynamoDB format
     for key, value in extracted_data.items():
         if isinstance(value, str):
+            print(f"String value: {value}")
             item[key] = {"S": str(value)}  # String
         elif isinstance(value, (int, float)):
+            print(f"Number value: {value}")
             item[key] = {"N": str(value)}  # Number
         elif isinstance(value, bool):
+            print(f"Boolean value: {value}")
             item[key] = {"BOOL": str(value)}  # Boolean
         elif value is None:
+            print(f"Null value: {value}")
             item[key] = {"NULL": True}  # Null value
 
     # Send the extracted data to control_queue SQS
