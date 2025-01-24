@@ -127,12 +127,12 @@ def handler(event, context):
         if isinstance(value, str):
             print(f"String value: {value}")
             item[key] = {"S": str(value)}  # String
-        elif isinstance(value, (int, float)):
-            print(f"Number value: {value}")
-            item[key] = {"N": str(value)}  # Number
         elif isinstance(value, bool):
             print(f"Boolean value: {value}")
             item[key] = {"BOOL": str(value)}  # Boolean
+        elif isinstance(value, (int, float)):
+            print(f"Number value: {value}")
+            item[key] = {"N": str(value)}  # Number
         elif value is None:
             print(f"Null value: {value}")
             item[key] = {"NULL": True}  # Null value
